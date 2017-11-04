@@ -1,0 +1,551 @@
+% Paper: FPI Observer with input disturbances
+% Version 1.0  (JCCK)
+% Authors: JCCK, ODC, SPM
+%% Revision: 
+%   r0 (7/16,17) First draft, Fixed some typos, added citation for the FTLA
+%   r1 (8/18)  Fixed typos.
+%
+%% Elsarticle Possible Formating Options:
+% \documentclass[preprint,12pt]{elsarticle} % Double Spacing
+% \documentclass[preprint,review,12pt]{elsarticle} % Single Spacing
+%% Journal layout:
+% \documentclass[final,1p,times]{elsarticle}
+% \documentclass[final,1p,times,twocolumn]{elsarticle}
+% \documentclass[final,3p,times]{elsarticle}
+% \documentclass[final,3p,times,twocolumn]{elsarticle}
+% \documentclass[final,5p,times]{elsarticle}
+% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+\documentclass[preprint,review,11pt]{elsarticle}
+\usepackage[margin=1in]{geometry} % To control margins
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{paralist,enumerate}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+%\setcitestyle{authoryear,open={((},close={))}}
+\usepackage{lineno}  
+\usepackage{xcolor}
+\usepackage{graphicx}
+%% Special packages
+\usepackage{comment}
+\usepackage{blindtext}
+
+\journal{Journal of Control X}
+
+%% For graphics
+\DeclareGraphicsExtensions{.pdf,.jpg,.png} %order is important
+\graphicspath{{.//figs//}}
+
+%% Load Macros
+\input{.//mac//control_macros.tex}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+\title{FPI Observer with State Disturbances - Git Test}
+
+\author[rit]{J.C.~Cockburn}
+\ead{juan.cockburn@rit.edu}
+
+\author[uf]{O.D.~Crisalle\corref{cor}}
+\ead{crisalle@che.uf.edu}
+
+\author[uf]{S.P.~Mudiraj}
+\ead{spmudiraj@gmail.com}
+
+\cortext[cor]{Corresponding author}
+
+\address[rit]{Computer Engineering Department, %
+ Rochester Institute of Technology, Rochester NY, USA 14623}
+\address[uf]{Chemical Engineering Department, %
+University of Florida, Gainesville FL, USA 32611}
+
+\begin{abstract}
+%% Text of abstract
+\blindtext[1]
+\begin{comment}
+Suspendisse potenti. Suspendisse quis sem elit, et mattis nisl. Phasellus consequat erat eu velit rhoncus non pharetra neque auctor. Phasellus eu lacus quam. Ut ipsum dolor, euismod aliquam congue sed, lobortis et orci. Mauris eget velit id arcu ultricies auctor in eget dolor. Pellentesque suscipit adipiscing sem, imperdiet laoreet dolor elementum ut. Mauris condimentum est sed velit lacinia placerat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam diam metus, pharetra vitae euismod sed, placerat ultrices eros. Aliquam tincidunt dapibus venenatis. In interdum tellus nec justo accumsan aliquam. Nulla sit amet massa augue.
+\end{comment}
+\end{abstract}
+
+
+\begin{keyword}
+Linear Systems \sep Observer Design 
+%% keywords here, in the form: keyword \sep keyword
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+
+\end{keyword}
+
+\end{frontmatter}
+
+%%
+%% Start line numbering here if you want
+%%
+\linenumbers
+
+%% main text
+\section{Introduction}
+
+\section{Problem Formulation}
+
+Consider a Linear Time-Invariant LTI) plant described by the state-space equations
+% do no remove
+\begin{subequations}
+\begin{alignat}{2}
+ \dot{x} &= Ax + Bu + N \delta , \quad x(0)=x_o \label{eq:plant_x}\\
+ y &= Cx + Du  \label{eq:plant_y}
+\end{alignat}
+\label{eq:sys}
+\end{subequations}
+%
+where $x\in\Rn{n}, u\in\Rn{p}, y\in\Rn{m}$, $\delta\in\Rn{k}$ and without loss of generality $N$ full column rank.
+
+Let the input  disturbance  be
+% do no remove
+\be
+d = N \delta, \quad  N\in\Rnxm{n}{k}. \label{eq:d}
+\ee
+and  assume it can be modeled as
+\begin{subequations}
+\begin{alignat}{2}
+\dot{z} &= A_d z, \quad  z(0) = z_o  \in \Rn{r} \label{eq:pert_z}\\
+          d &= W z + d_{\ol{o}}, \quad \cR(W) \subseteq \cR(N)  \label{eq:pert_x}
+%          p &= V z + d_{\ol{o}}   \label{eq:pert_x}
+\end{alignat}
+\label{eq:pert}
+\end{subequations}
+%
+where $z\in\Rn{r}$, $d\in\Rn{n}$, $W\in\Rn{n \times r}$ is full column rank and
+\begin{equation}
+d_{\ol{o}} = P_{W^\perp} \, d 
+\end{equation}
+where $P_{W^\perp} $ is the projection onto the orthogonal complement of $\cR(W)$, \emph{i.e.},   onto $\cN(W^T)$.
+
+The combined dynamic equations of the plant and perturbation are
+\begin{equation}
+\bM
+\dot{x}\\ \dot{z} \\ y
+\eM
+=
+\left[\begin{array}{cc|c}
+A                      & W                      & B \\ 
+O_{r \times n} & A_d                   & O_{r \times p}   \\ \hline
+C                      & O_{m \times r} & D
+\end{array}\right]
+\bM
+x \\ z \\ u
+\eM
++
+\bM
+I_n \\ O_{r \times n} \\ O_{m \times n} 
+\eM
+d_{\ol{o}}
+\label{eq:aug}
+\end{equation}
+
+Now consider a state observer of the form
+\begin{subequations}
+\begin{alignat}{2}
+\dot{\hx} &= A \hx + B u + W \hz + L(y - \hy) \\
+\hy &= C \hx + D u 
+\end{alignat}
+\label{eq:plant_est}
+\end{subequations}
+driven by the input $u$ and the output error
+\be
+\ty = y - \hy = C \tx
+\ee
+where the measurement perturbations are estimated using
+\begin{subequations}
+\begin{alignat}{2}
+\dot{\hz} &= A_d \hz + T (y - \hy), \quad \hz(0) = \hz_o\\
+\hd &= W \hz
+\end{alignat}
+\label{eq:pert_est}
+\end{subequations}
+
+\textcolor{blue}{[**JC] 
+Why is the disturbance estimate $\hd = W \hz $ instead of $\hd = W \hz + d_{\ol{o}}$ ?
+}
+%
+
+The observer parameters are $L \in \Rn{n \times m}$, $T\in \Rn{r \times m}$ and $W\in \Rn{n \times r}$.
+
+Subtracting \eqref{eq:plant_est} and \eqref{eq:pert_est}  from \eqref{eq:aug} 
+\begin{equation}
+\bM
+\dot{\tx}\\ \dot{\tz} \\ \ty
+\eM
+=
+\left[\begin{array}{cc|c}
+A                      & W                      & B \\ 
+O_{r \times n} & A_d                   & O_{r \times p} \\ \hline
+C                      & O_{m \times r} & O_{m \times p}
+\end{array}\right]
+\bM
+\tx \\ \tz \\ u
+\eM
++
+\bM
+I_n \\ O_{r \times n} \\ O_{m \times n} 
+\eM
+d_{\ol{o}}
+-
+\bM
+L \\ T \\  O_{m \times m} 
+\eM
+\ty
+\end{equation}
+
+Eliminating $\ty$ 
+\begin{align}
+\bM
+\dot{\tx}\\ \dot{\tz}
+\eM
+%&=
+%\bM
+%A - L C & W \\ 
+%-T C & A_d
+%\eM
+%\bM
+%\tx \\ \tz 
+%\eM
+%+
+%\bM
+%I_n \\ O_{r \times n} 
+%\eM
+%d_{\ol{o}}
+%\nonumber \\
+% Factored
+&=
+\left(
+\bM
+A & O_{n \times r} \\ 
+O_{r \times n} & A_d
+\eM
+-
+\bM
+L \\ T 
+\eM
+\bM
+C & V
+\eM
+\right)
+\bM
+\tx \\ \tz 
+\eM
++
+\bM
+I_n \\ O_{r \times n} 
+\eM
+d_{\ol{o}}
+% Abbreviated Notation
+\\
+\dot{\tilde{\beta}} 
+&= 
+(\ol{A} - \ol{L} \, \ol{C}) \, \tilde{\beta}  
++ \ol{B} \, d_{\ol{o}}, \quad \hat{\beta}(0) = \hat{\beta}_o
+\label{eq:error}
+\end{align}
+
+where 
+\begin{equation}
+\tilde{\beta} = \bM \tx \\ \tz \eM
+,\quad
+\ol{A} = \bM A &  W \\ O_{r \times n} & A_d \eM
+,\quad
+\ol{C} = \bM C & O_{m  \times r} \eM
+,\quad
+\ol{B} = \bM I_n \\ O_{r \times n} \eM
+\label{eq:est_err}
+\end{equation}
+
+\begin{rem}
+Since $W\in\Rn{n \times r}$ is full column rank $\dim \cR(W) =r$ and 
+$\dim \cN(W^T) =n-r$.
+\end{rem}
+
+
+Note that the estimation error dynamics \eqref{eq:error}
+are driven by the component of the perturbation, $d_{\ol{o}}\in\cN(W^T)$, that cannot be ``observed''.
+
+With notation as above, the unbiased observer problem can be stated as follows:
+
+\begin{prob} \label{p:unbiased}
+Find $\ol{L}$ and $W$ such that $\tilde{\beta} \rightarrow 0 $ asymptotically for all $\tilde{\beta}(0)$ and for all constant perturbations $d_{\ol{o}} \in \cN(W^T)$.
+\end{prob}
+
+When $d_{\ol{o}}=0$ problem~\ref{p:unbiased} reduces to a standard observer problem that is solvable if and only if
+$(\ol{A},\ol{C})$ detectable \cite{KAIL1980a}. 
+Furthermore, if $(\ol{A},\ol{C})$ observable the rate of 
+convergence of the estimation error can be made arbitrarily fast.  
+% Therefore a necessary condition for a solution to problem~\ref{p:observer} to % exist is that the pair $(\ol{A},\ol{C})$ be detectable. 
+
+In this paper the focus is on the analysis and design of observers subject to constant state perturbations.  This enables a simple characterization of all allowable perturbations and corresponds to the case when $A_d=O_{n \times n}$. 
+
+% In the next section necessary and sufficient conditions for the observer error dynamics will be determined.
+
+%\noindent\textcolor{blue}{[(JC**) The main objective of this paper is to determine how detectability of $(\ol{A},\ol{C})$ affects the choice of $T$ and $V$  and use this insight to design observers that eliminate constant biases whenever possible.]}
+
+
+\section{Observer Error Dynamics Stability}
+
+As mentioned above a necessary condition for problem~\ref{p:unbiased} to have a solution is that $(\ol{A},\ol{C})$ be detectable since that is it necessary and sufficient for the existence of a stabilizing gain for 
+the error dynamics. 
+
+In this section we show that detectability of $(\ol{A},\ol{C})$ is sufficient for detectability of $(A,C)$. However, for it to be necessary additional requirements on the output matrix of the perturbation model, $W$ must be satisfied.  The proof uses standard linear algebra results and block Gaussian elimination arguments.
+
+%% Theorem
+\begin{thm} If $(\ol{A},\ol{C})$ detectable then $(A,C)$ detectable.
+\label{th:suff}
+\end{thm}
+
+\begin{proof}
+By the PBH rank test
+\be
+\rank \bM sI_{n+r} - \ol{A} \\ \ol{C}\eM
+=
+\rank \bM s I_n -A & -W \\ O_{r\times n} & s I_r \\ C & O_{m\times r}  \eM = n+r, \forall ~s \in \cRHP \label{eq:PBH}
+\ee
+where $\cRHP = \{s \in \C : \real{s} \geq 0\}$ denotes the closed right half plane. 
+
+If $s =0$, the PBH rank condition becomes
+\be
+\rank \bM -A & -W \\ O_{r\times n} & O_{r\times r} \\ C &  O_{n \times r}\eM
+=
+\rank \bM A & W \\ C & O_{n\times r}  \eM 
+= n+r.
+\label{eq:s0}
+\ee
+Hence, it follows that 
+\be
+\rank W = r\quad \text{and} \quad \rank \bM A \\ C \eM
+= n,
+\label{eq:case0}
+\ee
+
+
+If $s \in \cRHP \setminus 0$, by block Gaussian elimination
+\begin{align}
+\bM 
+s I_n -A            &  -W \\ 
+O_{r\times n} & s I_r \\ 
+C                     & O_{m \times r}\eM
+\req
+\bM 
+s I_n -A            & - W \\ 
+C                     & O_{m \times r}\\
+O_{r\times n} & s I_r 
+\eM
+\req
+\left[\begin{array}{c|c}
+s I_n -A            & O_{n\times r} \\ 
+C                     & O_{m\times r} \\ \hline
+O_{r\times n} & s I_r 
+\end{array}\right]
+\label{eq:sAbarCbar}
+\end{align}
+
+Therefore %, due to the block structure of \eqref{eq:sAbarCbar}
+\be
+\rank \bM sI_{n+r} - \ol{A} \\ \ol{C}\eM
+=
+\rank \bM sI_{n} - A \\ C \eM + \rank s I_r 
+= n+r 
+\Rightarrow 
+\rank \bM sI_{n} -A \\ C\eM = n. 
+\label{eq:casenot0}
+\ee
+
+which together with \eqref{eq:case0} implies $(A,C)$ detectable.  
+\end{proof}
+
+The next theorem establishes the conditions that the plant and perturbation model matrices must satisfy to guarantee the existence of an asymptotic stabilizing gain for the observer error dynamics.
+
+%% Theorem
+\begin{thm} \label{th:nec}
+Let $[A,B,C,D]$ be a state-space realization of a system with $m$ outputs such that $\dim \cN(A)=q > 0$. % and $0 <r  \leq m-q$.  
+Then if $(A,C)$ detectable there exists a full column rank $W\in\Rn{n \times r}$, with $0 <r  \leq n-q$  such that $(\ol{A},\ol{C})$ detectable.
+\end{thm}
+
+\begin{proof}
+By the PBH rank test
+\be
+\rank \bM sI_n - A \\ C\eM
+ = n, \forall ~s \in \cRHP \label{eq:PBH_AC}
+\ee
+Construct an invertible column compression $H= [ H_1 ~ H_2 ]$ for $A$. Then
+\be
+\bM A  \\  C \eM H 
+= 
+\bM A H_1 & A H_2 \\ 
+      C H_1 & C H _2 \eM 
+= 
+\bM A_1 &  O_{n \times q} \\
+       C_1  & C_2  \eM
+\req
+\bM A_1 &  O_{n \times q} \\
+       O_{m \times (n-q)}  & C_2  \eM
+%
+\label{eq:H}
+\ee
+where we used the fact that $A_1 \in \Rn{n \times (n-q)}$ is full column rank.
+
+For $s=0$ and from \eqref{eq:H} 
+\be
+\rank \bM sI_n-A  \\ C \eM 
+= 
+\rank \bM A  \\ C \eM 
+= 
+\rank A_1  + \rank C_2
+= n
+\Rightarrow  \rank C_2 = q
+\label{eq:C1q}
+\ee
+By the Fundamental Theorem of Linear Algebra \cite{STRANG2009linear} it is always possible to construct a rank $r \leq q$ extension to $A_1=A H_1$ such that
+\be
+\rank \bM A_1 & W \eM = n-q+r.%, \quad r \leq q
+\label{eq:C2V1}
+\ee
+Hence, from \eqref{eq:H} and \eqref{eq:C2V1}
+\be
+\rank \bM A & W \\ 
+               C & O_{m \times r} \eM = n+r.
+\label{eq:2case0}               
+\ee
+For $s \in \cRHP \setminus  0$, extend the rank of the PBH test matrix \eqref{eq:PBH_AC} by adding $r$ columns and rows and apply block elementary operations to obtain the final result
+\be
+\rank
+\left[\begin{array}{c|c}
+s I_n -A            & O_{n\times r} \\ 
+O_{r\times n} & s I_r \\ 
+C                     & O_{m\times r}
+\end{array}\right]
+=
+\rank
+\left[\begin{array}{c|c}
+s I_n -A            & W \\ 
+O_{r\times n} & s I_r \\ 
+C                     & O_{m\times r}
+\end{array}\right]
+=
+\rank
+\bM sI - \ol{A} \\ \ol{C}\eM
+= n+r,
+\ee
+wich together with \eqref{eq:2case0} imply that $(\ol{A},\ol{C})$ is detectable.
+\end{proof}
+
+%% Remark
+\begin{rem} The number of columns of $W\in\Rn{n \times r}$ determines the dimension of the state of the perturbation model and is constrained by the number of states and the nullity of the state matrix of the system being observed (see equation \eqref{eq:C2V1}.)
+\end{rem}
+
+\section{Unbiased Estimation}
+In this section we unveil necessary and sufficient conditions for the solution of the  unbiased estimation problem \ref{p:unbiased}. 
+
+
+
+%% Theorem
+\begin{thm} \label{th:p1}
+Assume the conditions in Theorem~\ref{th:nec} hold.
+Then $\lim_{t \rightarrow \infty} \tilde{\beta}(t)=0$ for any constant $d_{\ol{o}}$ if and only if $\ol{A} - \ol{L}\, \ol{C}$ stable and $d_{\ol{o}}=0$.
+\end{thm}
+
+\begin{proof}
+Choose $W$ to satisfy Theorem~\ref{th:nec} and let $\ol{A}_f=\ol{A}-\ol{L} \, \ol{C}$.  Using Laplace Transforms, the state trajectories of \eqref{eq:error} for a step disturbance $d_{\ol{o}}$ are
+\be
+\tilde{\beta}(s) 
+=  
+(sI - \ol{A}_{f})^{-1} \tilde{\beta}(0)  
++ 
+\frac{1}{s}(sI - \ol{A}_{f})^{-1} \ol{B} \, 
+d_{\ol{o}}
+\ee
+By Theorem~\ref{th:nec} and standard observer theory it is always possible to choose $\ol{L}$ such that $\ol{A}_{f}$ is stable and therefore invertible.  
+For unbiased estimation $\tilde{\beta}_{ss}  = \lim_{t\rightarrow \infty} \tilde{\beta}(t) =0$. Applying the Final Value Theorem
+\begin{align}
+\tilde{\beta}_{ss}  
+= 
+\lim_{s \rightarrow 0 } s \tilde{\beta}(s) 
+=
+  (\ol{A}_{f})^{-1} \ol{B} \,  d_{\ol{o}} = 0
+  \Leftrightarrow 
+  \ol{B} \,  d_{\ol{o}} = 0 \Leftrightarrow  d_{\ol{o}} = 0
+\label{eq:thm3}
+\end{align}
+where the last equivalence follows due to the fact  that $\ol{B}$ in \eqref{eq:est_err} is full column rank.
+\end{proof}
+
+%In essence the unbiased estimation problem has a solution we have an accurate model of the disturbance.can be reduced to a standard estimation problem for an augmented  system. 
+%To make the above result practical more explicit equations will be developed.
+
+%\subsection{Estimator Design Equations}
+
+\begin{comment}
+The first step in the design process of unbiased estimators is to find a suitable full column rank 
+$W\in\Rn{m \times r}$ to model the perturbations.  Once $V$ is fixed, any admissible $d_{\ol{o}} \in \cN(V^T)$ can be characterized as
+\begin{align}
+d_{\ol{o}} &= S w,~w \in\Rn{m-r}
+\end{align}
+where the columns of $S\in\Rn{m \times (m-r)}$ form a basis for $\cN(V^T)$. 
+Since \eqref{eq:thm3} must be valid for all $w$ it follows that \eqref{eq:thm3} can be written as
+\be
+\ol{L} \,  d_{\ol{o}} = 0 \Leftrightarrow  \ol{L} S = O_{(n+r) \times (m-r)}
+%\Leftrightarrow
+%\begin{cases}
+%L S =  O_{n \times (m-r)} \\
+%T S =  O_{r \times (m-r)}
+%\end{cases}
+\label{eq:LbarS}
+\ee
+Theorem~\ref{th:nec} requires that $0< r \leq m-q$. Setting $r=m-q$ allows us to use $C_2=C H_2$ in 
+\eqref{eq:C2V1} instead of $S$ as a basis for $\cN(V^T)$. Then \eqref{eq:LbarS} becomes
+\be
+\ol{L} \, C H_2 = O_{(n+r) \times (m-q)}
+%\Leftrightarrow
+%\begin{cases}
+%L C_2 =  O_{n \times (m-q)} \\
+%T C_2 =  O_{r \times (m-q)}
+%\end{cases}
+\label{eq:LbarC_2}
+\ee
+
+\begin{rem}
+By construction $A H_2 = O_{n \times q}$ (see \eqref{eq:H}). Hence the additional linear constraints \eqref{eq:LbarC_2} 
+on $\ol{L}$ required for unbiased estimation are determined by the structure of the null space of the state matrix and 
+the output matrix of the system being observer.
+\end{rem}
+\end{comment}
+%======================================================================
+
+
+%% The Appendices part is started with the command \appendix;
+%% appendix sections are then done as normal sections
+%% \appendix
+
+%% \section{}
+%% \label{}
+
+%% References
+%%
+%% Following citation commands can be used in the body text:
+%% Usage of \cite is as follows:
+%%   \cite{key}          ==>>  [#]
+%%   \cite[chap. 2]{key} ==>>  [#, chap. 2]
+%%   \citet{key}         ==>>  Author [#]
+
+%% References with bibTeX database:
+\section{References}
+
+\bibliography{./bib/Control_Theory_Database_Rev13}
+
+
+\end{document}

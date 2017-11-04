@@ -1,0 +1,123 @@
+%% Macros for Control Systems Notes and Papers
+%% J.C. Cockburn 
+%% Updated June 1, 2017
+
+%% Local Macros and Definitions
+ % spacing
+ \newcommand{\vs}[1]{\vspace*{#1ex}}
+ \newcommand{\bea}[1]{\begin{eqnarray*}}%
+ \newcommand{\eea}[1]{\end{eqnarray*}}%
+ % Requires color package
+ \newcommand{\tb}[1]{\textcolor{Blue}{#1}}
+ \newcommand{\tr}[1]{\textcolor{Red}{#1}}
+ \newcommand{\tbr}[1]{\textcolor{Brown}{#1}}
+ % requires amsmath package
+ %% generic
+ \newcommand{\p}[1]{\phantom{#1}}
+ \newcommand{\bb}[1]{\mathbb{#1}}
+ \newcommand{\bs}[1]{\boldsymbol{#1}}
+ \newcommand{\ol}[1]{\overline{#1}}
+ \newcommand{\abs}[1]{\left\vert#1\right\vert}
+
+%% Math
+ \newcommand{\req}{\stackrel{\scriptscriptstyle\mathrm{row}}{\sim}}
+ \newcommand{\ceq}{\stackrel{\scriptscriptstyle\mathrm{col}}{\sim}}
+ \newcommand{\qedb}{\hfill\blacksquare}
+ \newcommand{\qedw}{\hfill \ensuremath{\Box}}
+ \newcommand{\be}{\begin{equation}}
+ \newcommand{\ee}{\end{equation}}
+
+ %% logic
+ \newcommand{\aand}{\,\wedge}
+ \newcommand{\oor}{\,\vee}
+ \newcommand{\nnot}{\sim}
+
+ %% linear algebra
+ \newcommand{\diag}{\mathrm{diag\,}}
+ \newcommand{\trace}{\mathbf{tr\,}}
+ \newcommand{\vecop}{\mathbf{vec\,}}
+ \newcommand{\rank}{\mathbf{rank\,}}
+ \newcommand{\corng}{\mathrm{corng\,}}
+ \newcommand{\coker}{\mathrm{coker\,}}
+ \newcommand{\rng}{\mathrm{rng\,}}
+ \newcommand{\spn}{\mathbf{span\,}}
+ \newcommand{\bMr}{\begin{bmatrix*}[r]}
+ \newcommand{\eMr}{\end{bmatrix*}}
+ \newcommand{\bM}{\begin{bmatrix*}}
+ \newcommand{\eM}{\end{bmatrix*}}
+ \newcommand{\bA}{\begin{matrix*}}
+ \newcommand{\eA}{\end{matrix*}}
+ \newcommand{\bBM}{\left[\begin{BMAT}(r)[0.25em]}
+ \newcommand{\eBM}{\end{BMAT}\right]}
+ 
+ %% Functional Analysis
+  \newcommand{\inner}[2]{\langle #1 , #2 \rangle}
+  \newcommand{\norm}[1]{ \| #1 \| }
+  \newcommand{\pow}[1]{ \mathrm{pow}({#1})}
+  \newcommand{\seq}[1]{ \{#1_{n}\} }
+ %% Linear Systems 
+  \newcommand{\real}[1]{\mathrm{Re}\left\lbrace#1\right\rbrace}
+  \newcommand{\imag}[1]{\mathrm{Im}\left\lbrace#1\right\rbrace}
+ \newcommand{\laplace}[1]{{\mathscr{L}}\left\lbrace\,{#1}\,\right\rbrace}
+ \newcommand{\ilaplace}[1]{{\mathscr{L}}^{-1}\left\lbrace\,{#1}\,\right\rbrace}
+ %% script and calligraphics
+ \newcommand{\R}{{\mathbb{R}}}
+ \newcommand{\C}{{\mathbb{C}}}
+ \newcommand{\Rn}[1]{{\mathbb{R}^{#1}}}
+ \newcommand{\Rnxm}[2]{{\mathbb{R}^{{#1}\times{#2}}}}
+ \newcommand{\hG}{{\widehat{G}}}
+ \newcommand{\hH}{{\widehat{H}}}
+ \newcommand{\cB}{{\cal B}}
+ \newcommand{\cC}{{\cal C}}
+ \newcommand{\cH}{{\cal H}}
+ \newcommand{\cL}{{\cal L}}
+ \newcommand{\cM}{{\cal M}}
+ \newcommand{\cN}{{\cal N}}
+ \newcommand{\cP}{{\cal P}}
+ \newcommand{\cR}{{\cal R}}
+ \newcommand{\cS}{{\cal S}}
+ \newcommand{\cU}{{\cal U}}
+ \newcommand{\cV}{{\cal V}}
+ \newcommand{\cW}{{\cal W}}
+ \newcommand{\cX}{{\cal X}}
+ \newcommand{\cY}{{\cal Y}}
+ \newcommand{\cZ}{{\cal Z}}
+%% Estimation
+ \newcommand{\hx}{{\hat{x}}}
+ \newcommand{\tx}{{\tilde{x}}}
+ \newcommand{\hy}{{\hat{y}}}
+ \newcommand{\ty}{{\tilde{y}}}
+ \newcommand{\hz}{{\hat{z}}}
+ \newcommand{\tz}{{\tilde{z}}}
+ \newcommand{\hp}{{\hat{p}}}
+ \newcommand{\hd}{{\hat{d}}}
+ 
+%% Robust Control, partitioned matrices
+ \newcommand{\partm}[2]{{%
+        \left[\begin{array}{c|c}{#1}&{#2}\end{array}\right]}} 
+ \newcommand{\pmat}[4]{\left[\begin{array}{c|c}%
+       {#1}&{#2}\\\hline{#3}&{#4} \end{array}\right]} 
+ \newcommand{\ulft}[1]{{\cal F}_u({#1})}
+ \newcommand{\llft}[1]{{\cal F}_\ell({#1})}
+ \newcommand{\rhinf}{{\cal RH}_\infty}
+ \newcommand{\Htwo}{{\cal H}_2}
+ \newcommand{\RHtwo}{{\cal RH}_2}
+ \newcommand{\Hoo}{{\cal H}_\infty}
+ \newcommand{\RHoo}{{\cal RH}_\infty}
+ \newcommand{\RHP}{{{\C}_{+}}}
+ \newcommand{\cRHP}{{\ol{\C}_{+}}}
+ \newcommand{\LHP}{{{\C}_{-}}}
+ \newcommand{\Imag}{{{\C}_{0}}}
+ \newcommand{\cLHP}{{\ol{\C}_{-}}}
+ 
+% New Environments
+ \newtheorem{thm}{Theorem}
+ \newtheorem*{thm*}{Theorem}
+ \newtheorem{prob}{Problem}
+ \newtheorem*{prob*}{Problem}
+ \newtheorem{prop}{Proposition}
+ \newtheorem*{prop*}{Proposition}
+ \newtheorem{assump}{Assumption}
+ \newtheorem*{assump*}{Assumption}
+ \newtheorem{rem}{Remark}
+ \newtheorem*{rem*}{Remark}
